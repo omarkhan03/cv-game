@@ -3,7 +3,7 @@ import cv2
 import cvzone
 from cvzone.HandTrackingModule import HandDetector
 import numpy as np
-
+from laser import Laser
 
 class Player(pygame.sprite.Sprite):
 
@@ -13,6 +13,11 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(midbottom=pos)
         self.speed = speed
         self.max_x_constraint = constraint
+        self.ready = True
+        self.laser_time = 0
+        self.laser_cooldown = 600
+
+        self.lasers = pygame.sprite.Group()
 
         self.cap = cv2.VideoCapture(0)
         self.cap.set(3, 1280)
@@ -27,6 +32,7 @@ class Player(pygame.sprite.Sprite):
 
     def shoot_laser(self):
         print('shoot laser')
+        self.lasers.add(Laser(self.rect.center))
 
     def get_input(self):
         _, img = self.cap.read()
@@ -37,11 +43,12 @@ class Player(pygame.sprite.Sprite):
         # hands = detector.findHands(img, flipType=False, draw=False)
 
         if hands:
-            x, y, w, h = hands[0]['bbox']
+            hand = hands[0]
+            x, y, w, h = hand['bbox']
             # h1, w1, _ = imgBat1.shape
             x1 = x + w//2
             x1 = np.clip(x1, 100, 1150)
-            print(x1)
+            # print(x1)
 
             map = x1 - 100
             map = map * self.max_x_constraint
@@ -55,15 +62,24 @@ class Player(pygame.sprite.Sprite):
 
             self.rect.x = map
 
-            if keys[pygame.K_SPACE]:
+            fingers = self.detector.fingersUp(hand)
+            if fingers == [1, 1, 0, 0, 0] and self.ready:
                 self.shoot_laser()
-
+                self.ready = False
+                self.laser_time = pygame.time.get_ticks()
         cv2.imshow("Image", img)
+
+    def recharge(self):
+        if not self.ready:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.laser_time >= self.laser_cooldown:
+                self.ready = True
 
     def update(self):
         self.get_input()
         self.constraint()
-
+        self.recharge()
+        self.lasers.update()
 
 
 
