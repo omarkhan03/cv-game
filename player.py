@@ -5,8 +5,8 @@ from cvzone.HandTrackingModule import HandDetector
 import numpy as np
 from laser import Laser
 
-class Player(pygame.sprite.Sprite):
 
+class Player(pygame.sprite.Sprite):
     def __init__(self, pos, constraint, speed):
         super().__init__()
         self.image = pygame.image.load('./Resources/player.png').convert_alpha()
@@ -20,9 +20,11 @@ class Player(pygame.sprite.Sprite):
         self.lasers = pygame.sprite.Group()
 
         self.cap = cv2.VideoCapture(0)
-        self.cap.set(3, 1280)
-        self.cap.set(4, 720)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
         self.detector = HandDetector(detectionCon=0.8, maxHands=1)
+
+        self.img = None
 
     def constraint(self):
         if self.rect.left <= 0:
@@ -32,7 +34,7 @@ class Player(pygame.sprite.Sprite):
 
     def shoot_laser(self):
         print('shoot laser')
-        self.lasers.add(Laser(self.rect.center))
+        self.lasers.add(Laser(self.rect.center, -15, self.rect.bottom))
 
     def get_input(self):
         _, img = self.cap.read()
@@ -40,26 +42,16 @@ class Player(pygame.sprite.Sprite):
 
         # Find hand and its landmarks
         hands, img = self.detector.findHands(img, flipType=False)
-        # hands = detector.findHands(img, flipType=False, draw=False)
 
         if hands:
             hand = hands[0]
             x, y, w, h = hand['bbox']
-            # h1, w1, _ = imgBat1.shape
             x1 = x + w//2
             x1 = np.clip(x1, 100, 1150)
-            # print(x1)
 
             map = x1 - 100
             map = map * self.max_x_constraint
             map = map // 1150
-
-            # if x1 < 400:
-            #     self.rect.x -= self.speed
-            # elif x1 > 800:
-            #     self.rect.x += self.speed
-            keys = pygame.key.get_pressed()
-
             self.rect.x = map
 
             fingers = self.detector.fingersUp(hand)
@@ -67,7 +59,9 @@ class Player(pygame.sprite.Sprite):
                 self.shoot_laser()
                 self.ready = False
                 self.laser_time = pygame.time.get_ticks()
-        cv2.imshow("Image", img)
+
+        self.img = img
+        # cv2.imshow("Image", img)
 
     def recharge(self):
         if not self.ready:
@@ -81,6 +75,5 @@ class Player(pygame.sprite.Sprite):
         self.recharge()
         self.lasers.update()
 
-
-
-
+    def get_image(self):
+        return self.img

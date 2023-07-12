@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="78590524-1dd9-47aa-8e14-246a54f06053" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/laser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/player.py" afterDir="false" />
@@ -86,7 +85,8 @@
       <workItem from="1688943139043" duration="23626000" />
       <workItem from="1689046711274" duration="597000" />
       <workItem from="1689050008785" duration="1197000" />
-      <workItem from="1689058353176" duration="2738000" />
+      <workItem from="1689058353176" duration="6754000" />
+      <workItem from="1689195828956" duration="3452000" />
     </task>
     <servers />
   </component>
@@ -94,6 +94,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/cv_game$main.coverage" NAME="main Coverage Results" MODIFIED="1689063535948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/cv_game$main.coverage" NAME="main Coverage Results" MODIFIED="1689204076669" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
