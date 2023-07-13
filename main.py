@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
         # if hands:
         #     hand = hands[0]
-        #     x, y, w, h = hand['bbox']
+        #     x, y, w, h = hand['bbox'] 
 
 
         # Convert the frame from BGR to RGB for PyGame
