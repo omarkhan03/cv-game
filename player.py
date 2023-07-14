@@ -7,15 +7,15 @@ from laser import Laser
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, constraint, speed):
+    def __init__(self, pos, cwidth, speed, vwidth):
         super().__init__()
         self.image = pygame.image.load('./Resources/player.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=pos)
         self.speed = speed
-        self.max_x_constraint = constraint
+        self.max_x_constraint = cwidth + vwidth
         self.ready = True
         self.laser_time = 0
-        self.laser_cooldown = 600
+        self.laser_cooldown = 200
 
         self.lasers = pygame.sprite.Group()
 
@@ -23,18 +23,19 @@ class Player(pygame.sprite.Sprite):
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
         self.detector = HandDetector(detectionCon=0.8, maxHands=1)
+        self.vwidth = vwidth
 
         self.img = None
 
     def constraint(self):
-        if self.rect.left <= 0:
-            self.rect.left = 0
+        if self.rect.left <= self.vwidth:
+            self.rect.left = self.vwidth
         if self.rect.right >= self.max_x_constraint:
             self.rect.right = self.max_x_constraint
 
     def shoot_laser(self):
         print('shoot laser')
-        self.lasers.add(Laser(self.rect.center, -15, self.rect.bottom))
+        self.lasers.add(Laser(self.rect.center, -25, self.rect.bottom))
 
     def get_input(self):
         _, img = self.cap.read()
@@ -50,12 +51,12 @@ class Player(pygame.sprite.Sprite):
             x1 = np.clip(x1, 100, 1150)
 
             map = x1 - 100
-            map = map * self.max_x_constraint
+            map = map * (self.max_x_constraint - self.vwidth)
             map = map // 1150
-            self.rect.x = map
+            self.rect.x = map + self.vwidth
 
             fingers = self.detector.fingersUp(hand)
-            if fingers == [1, 1, 0, 0, 0] and self.ready:
+            if fingers[1] == 1 and self.ready:
                 self.shoot_laser()
                 self.ready = False
                 self.laser_time = pygame.time.get_ticks()
