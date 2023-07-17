@@ -16,7 +16,7 @@ class Game:
         self.lives = 3
         self.live_surf = pygame.image.load('./Resources/player.png').convert_alpha()
         self.score = 0
-        self.font = pygame.font.Font('./Resources/Pixeled.ttf', 15)
+        self.font = pygame.font.Font('./Resources/Pixeled.ttf', 14)
 
         # obstacle setup
         self.shape = obstacle.shape
@@ -131,7 +131,7 @@ class Game:
                     sys.exit()
 
     def display_lives(self):
-        life_surf = self.font.render('lives:', False, 'white')
+        life_surf = self.font.render('Lives:', False, 'white')
         life_rect = life_surf.get_rect(topleft = (10,100))
         screen.blit(life_surf, life_rect)
         for live in range(self.lives - 1):
@@ -139,9 +139,16 @@ class Game:
             screen.blit(self.live_surf,(x,100))
 
     def display_score(self):
-        score_surf = self.font.render(f'score: {self.score}', False, 'white')
+        score_surf = self.font.render(f'Score: {self.score}', False, 'white')
         score_rect = score_surf.get_rect(topleft = (10,130))
         screen.blit(score_surf, score_rect)
+
+    def display_in_scope(self):
+        scope_surf = self.font.render('Hands out of camera scope!', False, 'red')
+        scope_rect = scope_surf.get_rect(topleft = (10,160))
+
+        if not self.player_sprite.in_scope:
+            screen.blit(scope_surf, scope_rect)
 
     def run(self):
         self.player.update()
@@ -161,6 +168,7 @@ class Game:
         self.extra.draw(screen)
         self.display_lives()
         self.display_score()
+        self.display_in_scope()
 
 
 if __name__ == '__main__':

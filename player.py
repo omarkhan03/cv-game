@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite):
 
         self.fingers = None
         self.img = None
+        self.in_scope = False
 
     def constraint(self):
         if self.rect.left <= self.vwidth:
@@ -57,6 +58,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.x = map + self.vwidth
 
             self.fingers = self.detector.fingersUp(hand)
+            return True
+        return False
 
     def get_input(self):
         if self.fingers[1] == 1 and self.ready:
@@ -73,15 +76,15 @@ class Player(pygame.sprite.Sprite):
                 self.ready = True
 
     def update(self):
-        self.read_fingers()
+        if self.read_fingers(): self.in_scope = True
+        else: self.in_scope = False
+
         try:
             self.get_input()
             self.constraint()
             self.recharge()
             self.lasers.update()
-
-        except:
-            pass
+        except: pass
 
     def get_image(self):
         return self.img
