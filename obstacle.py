@@ -15,3 +15,12 @@ shape = [
 'xxxxxxxxxxx',
 'xxx     xxx',
 'xx       xx']
+
+shape_flipped = [
+'xx       xx',
+'xxx     xxx',
+'xxxxxxxxxxx',
+'xxxxxxxxxxx',
+'xxxxxxxxxxx',
+' xxxxxxxxx',
+'  xxxxxxx']

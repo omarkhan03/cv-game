@@ -9,7 +9,7 @@ from laser import Laser
 
 class Game:
     def __init__(self):
-        self.player_sprite = Player(((video_width + (screen_width / 2)), screen_height), screen_width, 5, video_width)
+        self.player_sprite = Player(((video_width + (screen_width / 2)), screen_height / 2), screen_width, 5, video_width, screen)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
 
         # health and score setup
@@ -19,23 +19,30 @@ class Game:
         self.font = pygame.font.Font('./Resources/Pixeled.ttf', 14)
 
         # obstacle setup
-        self.shape = obstacle.shape
-        self.block_size = 6
+        self.shape = None
+        self.block_size = 3
         self.blocks = pygame.sprite.Group()
-        self.obstacle_amount = 4
+        self.obstacle_amount = 8
         self.obstacle_x_positions = [num * (screen_width / self.obstacle_amount) for num in range(self.obstacle_amount)]
-        self.create_multiple_obstacles(*self.obstacle_x_positions, x_start=video_width + (screen_width/15), y_start=480)
+        self.create_multiple_obstacles(*self.obstacle_x_positions, x_start=video_width + (screen_width/15), y_start=screen_height/2-100, flipped=False)
+        self.create_multiple_obstacles(*self.obstacle_x_positions, x_start=video_width + (screen_width/15), y_start=screen_height/2+100, flipped=True)
 
         # alien setup
         self.aliens = pygame.sprite.Group()
         self.alien_lasers = pygame.sprite.Group()
-        self.alien_setup(rows=6, cols=8)
+        self.alien_setup(rows=6, cols=15, flipped=False)
+        self.alien_setup(y_offset=560, rows=6, cols=15, flipped=True)
         self.alien_direction = 1
 
         self.extra = pygame.sprite.GroupSingle()
-        self.extra_spawn_time = randint(400,800)
+        self.extra_spawn_time = randint(100,200)
 
-    def create_obstacle(self, x_start, y_start, offset_x):
+    def create_obstacle(self, x_start, y_start, offset_x, flipped):
+        if flipped:
+            self.shape = obstacle.shape_flipped
+        else:
+            self.shape = obstacle.shape
+
         for row_index, row in enumerate(self.shape):
             for col_index, col in enumerate(row):
                 if col == 'x':
@@ -44,20 +51,33 @@ class Game:
                     block = obstacle.Block(self.block_size, (241,79,80), x, y)
                     self.blocks.add(block)
 
-    def create_multiple_obstacles(self, *offset, x_start, y_start):
+    def create_multiple_obstacles(self, *offset, x_start, y_start, flipped):
         for offset_x in offset:
-            self.create_obstacle(x_start, y_start, offset_x)
+            self.create_obstacle(x_start, y_start, offset_x, flipped)
 
-    def alien_setup(self, rows, cols, x_distance=60, y_distance=48, x_offset=70, y_offset=100):
+    def alien_setup(self, rows, cols, x_distance=30, y_distance=20, x_offset=70, y_offset=50, flipped=False):
         x_offset = x_offset + video_width
         for row_index, row in enumerate(range(rows)):
             for col_index, col in enumerate(range(cols)):
                 x = col_index * x_distance + x_offset
-                y = row_index * y_distance + y_offset
+                if flipped:
+                    y = row_index * y_distance + y_offset
+                    if row_index <= 2:
+                        alien_sprite = Alien('red', x, y, flipped)
+                    elif 4 >= row_index > 2:
+                        alien_sprite = Alien('green', x, y, flipped)
+                    else:
+                        alien_sprite = Alien('yellow', x, y, flipped)
+                else:
+                    y = row_index * y_distance + y_offset
+                    if row_index == 0:
+                        alien_sprite = Alien('yellow', x, y, flipped)
+                    elif 1 <= row_index <= 2:
+                        alien_sprite = Alien('green', x, y, flipped)
+                    else:
+                        alien_sprite = Alien('red', x, y, flipped)
 
-                if row_index == 0: alien_sprite = Alien('yellow',x,y)
-                elif 1 <= row_index <= 2: alien_sprite = Alien('green',x,y)
-                else: alien_sprite = Alien('red',x,y)
+
                 self.aliens.add(alien_sprite)
 
     def alien_position_checker(self):
@@ -73,22 +93,27 @@ class Game:
     def alien_move_down(self,distance):
         if self.aliens:
             for alien in self.aliens.sprites():
-                alien.rect.y += distance
+                if alien.flipped:
+                    alien.rect.y -= distance
+                else:
+                    alien.rect.y += distance
 
     def alien_shoot(self):
         if self.aliens.sprites():
             random_alien = choice(self.aliens.sprites())
-            laser_sprite = Laser(random_alien.rect.center,6,screen_height)
+            if random_alien.flipped:
+                laser_sprite = Laser(random_alien.rect.center, -6, screen_height)
+            else:
+                laser_sprite = Laser(random_alien.rect.center,6,screen_height)
             self.alien_lasers.add(laser_sprite)
 
     def extra_alien_timer(self):
         self.extra_spawn_time -= 1
         if self.extra_spawn_time <= 0:
-            self.extra.add(Extra(choice(['right','left']),window_width, video_width))
+            self.extra.add(Extra(choice(['right','left']),window_width, video_width,choice([False, True])))
             self.extra_spawn_time = randint(400,800)
 
     def collision_checks(self):
-
         # player lasers
         if self.player.sprite.lasers:
             for laser in self.player.sprite.lasers:
@@ -161,7 +186,7 @@ class Game:
         self.display_lives()
 
         self.player.sprite.lasers.draw(screen)
-        self.player.draw(screen)
+        # self.player.draw(screen)
         self.blocks.draw(screen)
         self.aliens.draw(screen)
         self.alien_lasers.draw(screen)
@@ -175,7 +200,7 @@ if __name__ == '__main__':
     pygame.init()
 
     screen_width = 600
-    screen_height = 600
+    screen_height = 700
 
     video_width = 213 * 1.7
     video_height = 120 * 1.7
