@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
         self.max_x_constraint = cwidth + vwidth
         self.ready = True
         self.laser_time = 0
-        self.laser_cooldown = 500
+        self.laser_cooldown = 300
 
         self.lasers = pygame.sprite.Group()
 
@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.detector = HandDetector(detectionCon=0.8, maxHands=1)
         self.vwidth = vwidth
 
+        self.fingers = None
         self.img = None
 
     def constraint(self):
@@ -36,17 +37,18 @@ class Player(pygame.sprite.Sprite):
     def shoot_laser(self):
         self.lasers.add(Laser(self.rect.center, -25, self.rect.bottom))
 
-    def get_input(self):
+    def read_fingers(self):
         _, img = self.cap.read()
         img = cv2.flip(img, 1)
 
         # Find hand and its landmarks
         hands, img = self.detector.findHands(img, flipType=False)
+        self.img = img
 
         if hands:
             hand = hands[0]
             x, y, w, h = hand['bbox']
-            x1 = x + w//2
+            x1 = x + w // 2
             x1 = np.clip(x1, 100, 1150)
 
             map = x1 - 100
@@ -54,26 +56,32 @@ class Player(pygame.sprite.Sprite):
             map = map // 1150
             self.rect.x = map + self.vwidth
 
-            fingers = self.detector.fingersUp(hand)
-            if fingers[1] == 1 and self.ready:
-                self.shoot_laser()
-                self.ready = False
-                self.laser_time = pygame.time.get_ticks()
+            self.fingers = self.detector.fingersUp(hand)
 
-        self.img = img
+    def get_input(self):
+        if self.fingers[1] == 1 and self.ready:
+            self.shoot_laser()
+            self.ready = False
+            self.laser_time = pygame.time.get_ticks()
+
         # cv2.imshow("Image", img)
 
     def recharge(self):
         if not self.ready:
             current_time = pygame.time.get_ticks()
-            if current_time - self.laser_time >= self.laser_cooldown:
+            if current_time - self.laser_time >= self.laser_cooldown and self.fingers[1] != 1:
                 self.ready = True
 
     def update(self):
-        self.get_input()
-        self.constraint()
-        self.recharge()
-        self.lasers.update()
+        self.read_fingers()
+        try:
+            self.get_input()
+            self.constraint()
+            self.recharge()
+            self.lasers.update()
+
+        except:
+            pass
 
     def get_image(self):
         return self.img

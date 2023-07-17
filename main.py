@@ -169,8 +169,8 @@ if __name__ == '__main__':
     screen_width = 600
     screen_height = 600
 
-    video_width = 213 * 1.5
-    video_height = 120 * 1.5
+    video_width = 213 * 1.7
+    video_height = 120 * 1.7
 
     window_width = screen_width + video_width
     window_height = screen_height
@@ -180,6 +180,7 @@ if __name__ == '__main__':
 
     screen = pygame.display.set_mode((window_width, window_height))
     pygame.display.set_caption("Gesture-Control Space Invaders")
+
     clock = pygame.time.Clock()
     game = Game()
 
@@ -215,8 +216,14 @@ if __name__ == '__main__':
             screen.fill((0, 0, 0))
             screen.fill((50, 50, 50), (0, 0, video_width, screen.get_height()))
             screen.blit(frame_scaled, (video_pos_x, video_pos_y))
+
+
         except:
             print("First game loop (image not initialized)")
+
+        logo = pygame.image.load("./Resources/logo.png").convert_alpha()
+        logo = pygame.transform.scale(logo, (window_width / window_width*400, window_height / window_height*100))
+        screen.blit(logo, (-20, 0))
 
         game.run()
         pygame.display.flip()
