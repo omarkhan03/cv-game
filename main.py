@@ -9,15 +9,14 @@ from laser import Laser
 
 class Game:
     def __init__(self):
-        self.player_sprite = Player(((screen_width / 2), screen_height), screen_width, 5, video_width)
+        self.player_sprite = Player(((video_width + (screen_width / 2)), screen_height), screen_width, 5, video_width)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
 
         # health and score setup
         self.lives = 3
         self.live_surf = pygame.image.load('./Resources/player.png').convert_alpha()
-        self.live_x_start_pos = window_width - (self.live_surf.get_size()[0] * 2 + 20)
         self.score = 0
-        self.font = pygame.font.Font('./Resources/Pixeled.ttf', 20)
+        self.font = pygame.font.Font('./Resources/Pixeled.ttf', 15)
 
         # obstacle setup
         self.shape = obstacle.shape
@@ -132,13 +131,16 @@ class Game:
                     sys.exit()
 
     def display_lives(self):
+        life_surf = self.font.render('lives:', False, 'white')
+        life_rect = life_surf.get_rect(topleft = (10,100))
+        screen.blit(life_surf, life_rect)
         for live in range(self.lives - 1):
-            x = self.live_x_start_pos + (live * (self.live_surf.get_size()[0] + 10))
-            screen.blit(self.live_surf,(x,8))
+            x = 100 + (live * (self.live_surf.get_size()[0] + 10))
+            screen.blit(self.live_surf,(x,100))
 
     def display_score(self):
         score_surf = self.font.render(f'score: {self.score}', False, 'white')
-        score_rect = score_surf.get_rect(topleft = (10,-10))
+        score_rect = score_surf.get_rect(topleft = (10,130))
         screen.blit(score_surf, score_rect)
 
     def run(self):
@@ -159,8 +161,6 @@ class Game:
         self.extra.draw(screen)
         self.display_lives()
         self.display_score()
-
-
 
 
 if __name__ == '__main__':
@@ -223,6 +223,8 @@ if __name__ == '__main__':
 
         logo = pygame.image.load("./Resources/logo.png").convert_alpha()
         logo = pygame.transform.scale(logo, (window_width / window_width*400, window_height / window_height*100))
+        h = logo.get_height()
+
         screen.blit(logo, (-20, 0))
 
         game.run()

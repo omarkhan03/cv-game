@@ -25,10 +25,15 @@ class Extra(pygame.sprite.Sprite):
             x = window_width - 50
             self.speed = -3
         else:
-            x = video_width + 50
+            x = video_width+1
             self.speed = 3
 
         self.rect = self.image.get_rect(topleft=(x,80))
+        self.vw = video_width
 
     def update(self):
         self.rect.x += self.speed
+        if self.rect.x < self.vw:
+            print('yo!')
+            self.kill()
+
