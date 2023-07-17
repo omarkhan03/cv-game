@@ -16,6 +16,8 @@ class Game:
         self.lives = 3
         self.live_surf = pygame.image.load('./Resources/player.png').convert_alpha()
         self.live_x_start_pos = window_width - (self.live_surf.get_size()[0] * 2 + 20)
+        self.score = 0
+        self.font = pygame.font.Font('./Resources/Pixeled.ttf', 20)
 
         # obstacle setup
         self.shape = obstacle.shape
@@ -94,11 +96,17 @@ class Game:
                 # obstacle collisions
                 if pygame.sprite.spritecollide(laser, self.blocks, True):
                     laser.kill()
+
                 # alien collisions
-                if pygame.sprite.spritecollide(laser, self.aliens, True):
+                aliens_hit = pygame.sprite.spritecollide(laser, self.aliens, True)
+                if aliens_hit:
+                    for alien in aliens_hit:
+                        self.score += alien.value
                     laser.kill()
+
                 # extra collisions
                 if pygame.sprite.spritecollide(laser, self.extra, True):
+                    self.score += 500
                     laser.kill()
 
         # alien lasers
@@ -128,6 +136,11 @@ class Game:
             x = self.live_x_start_pos + (live * (self.live_surf.get_size()[0] + 10))
             screen.blit(self.live_surf,(x,8))
 
+    def display_score(self):
+        score_surf = self.font.render(f'score: {self.score}', False, 'white')
+        score_rect = score_surf.get_rect(topleft = (10,-10))
+        screen.blit(score_surf, score_rect)
+
     def run(self):
         self.player.update()
         self.aliens.update(self.alien_direction)
@@ -144,6 +157,8 @@ class Game:
         self.aliens.draw(screen)
         self.alien_lasers.draw(screen)
         self.extra.draw(screen)
+        self.display_lives()
+        self.display_score()
 
 
 
