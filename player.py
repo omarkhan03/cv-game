@@ -6,7 +6,7 @@ from laser import Laser
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, cwidth, speed, vwidth, screen):
+    def __init__(self, pos, cwidth, speed, vwidth, screen, height):
         super().__init__()
         self.image0 = pygame.image.load('./Resources/player.png').convert_alpha()
         self.image = pygame.transform.scale(self.image0, (30 / 1, 15 / 1))
@@ -35,6 +35,8 @@ class Player(pygame.sprite.Sprite):
 
         self.screen = screen
         self.flipped = False
+        self.ww = cwidth + vwidth
+        self.wh = height
 
     def constraint(self):
         if self.rect.left <= self.vwidth:
@@ -56,11 +58,11 @@ class Player(pygame.sprite.Sprite):
         img = cv2.flip(img, 1)
 
         # Find hand and its landmarks
-        hands, img = self.detector.findHands(img, flipType=False)
+        self.hands, img = self.detector.findHands(img, flipType=False)
         self.img = img
 
-        if hands:
-            hand = hands[0]
+        if self.hands:
+            hand = self.hands[0]
             x, y, w, h = hand['bbox']
             x1 = x + w // 2
             x1 = np.clip(x1, 100, 1150)
@@ -98,7 +100,22 @@ class Player(pygame.sprite.Sprite):
                 self.ready_to_flip = True
 
     def update(self):
-        if self.read_fingers(): self.in_scope = True
+        if self.read_fingers():
+            self.in_scope = True
+
+            if self.fingers[1] == 1:
+                shoot1 = pygame.image.load("./Resources/shoot1.png").convert_alpha()
+                shoot1 = pygame.transform.scale(shoot1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
+                self.screen.blit(shoot1, (5, 305))
+            elif self.fingers == [0,0,0,0,1]:
+                flip1 = pygame.image.load("./Resources/flip1.png").convert_alpha()
+                flip1 = pygame.transform.scale(flip1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
+                self.screen.blit(flip1, (5, 400))
+            else:
+                move1 = pygame.image.load("./Resources/move1.png").convert_alpha()
+                move1 = pygame.transform.scale(move1, (self.ww / self.ww * 330, self.wh / self.wh * 90))
+                self.screen.blit(move1, (5, 210))
+
         else: self.in_scope = False
 
         try:

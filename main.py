@@ -9,7 +9,8 @@ from laser import Laser
 
 class Game:
     def __init__(self):
-        self.player_sprite = Player(((video_width + (screen_width / 2)), screen_height / 2), screen_width, 5, video_width, screen)
+        self.player_sprite = \
+            Player(((video_width + (screen_width / 2)), screen_height / 2), screen_width, 5, video_width, screen, window_height)
         self.player = pygame.sprite.GroupSingle(self.player_sprite)
 
         # health and score setup
@@ -256,13 +257,20 @@ if __name__ == '__main__':
 
         logo = pygame.image.load("./Resources/logo.png").convert_alpha()
         logo = pygame.transform.scale(logo, (window_width / window_width*400, window_height / window_height*100))
-        h = logo.get_height()
-
         screen.blit(logo, (-20, 0))
+
+        move0 = pygame.image.load("./Resources/move0.png").convert_alpha()
+        move0 = pygame.transform.scale(move0, (window_width / window_width*330, window_height / window_height*90))
+        screen.blit(move0, (5, 210))
+
+        shoot0 = pygame.image.load("./Resources/shoot0.png").convert_alpha()
+        shoot0 = pygame.transform.scale(shoot0, (window_width / window_width*330, window_height / window_height*90))
+        screen.blit(shoot0, (5, 305))
+
+        flip0 = pygame.image.load("./Resources/flip0.png").convert_alpha()
+        flip0 = pygame.transform.scale(flip0, (window_width / window_width*330, window_height / window_height*90))
+        screen.blit(flip0, (5, 400))
 
         game.run()
         pygame.display.flip()
         clock.tick(60)
-
-
-#2-100
