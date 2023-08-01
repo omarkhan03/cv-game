@@ -31,8 +31,8 @@ class Game:
         # alien setup
         self.aliens = pygame.sprite.Group()
         self.alien_lasers = pygame.sprite.Group()
-        self.alien_setup(rows=6, cols=15, flipped=False)
-        self.alien_setup(y_offset=560, rows=6, cols=15, flipped=True)
+        self.alien_setup(rows=5, cols=10, flipped=False)
+        self.alien_setup(y_offset=560, rows=5, cols=10, flipped=True)
         self.alien_direction = 1
 
         self.extra = pygame.sprite.GroupSingle()
@@ -62,7 +62,7 @@ class Game:
         for offset_x in offset:
             self.create_obstacle(x_start, y_start, offset_x, flipped)
 
-    def alien_setup(self, rows, cols, x_distance=30, y_distance=20, x_offset=70, y_offset=50, flipped=False):
+    def alien_setup(self, rows, cols, x_distance=50, y_distance=20, x_offset=70, y_offset=50, flipped=False):
         x_offset = x_offset + video_width
         for row_index, row in enumerate(range(rows)):
             for col_index, col in enumerate(range(cols)):
@@ -92,11 +92,11 @@ class Game:
         for alien in all_aliens:
             if alien.rect.right >= window_width:
                 self.alien_direction = -1
-                self.alien_move_down(2)
+                self.alien_move_down(6)
                 break
             elif alien.rect.left <= video_width:
                 self.alien_direction = 1
-                self.alien_move_down(2)
+                self.alien_move_down(6)
                 break
 
     def alien_move_down(self,distance):
