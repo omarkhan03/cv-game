@@ -7,7 +7,7 @@ from laser import Laser
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, cwidth, speed, vwidth, screen, height):
         super().__init__()
-        self.image0 = pygame.image.load('./Resources/player.png').convert_alpha()
+        self.image0 = pygame.image.load('../Resources/player.png').convert_alpha()
         self.image = pygame.transform.scale(self.image0, (30 / 1, 15 / 1))
         self.rect = self.image.get_rect(midtop=pos)
 
@@ -37,7 +37,7 @@ class Player(pygame.sprite.Sprite):
         self.ww = cwidth + vwidth
         self.wh = height
 
-        self.laser_sound = pygame.mixer.Sound('./Resources/laser.wav')
+        self.laser_sound = pygame.mixer.Sound('../Resources/laser.wav')
         self.laser_sound.set_volume(0.01)
 
         self.game_state = 0
@@ -62,7 +62,7 @@ class Player(pygame.sprite.Sprite):
         img = cv2.flip(img, 1)
 
         # Find hand and its landmarks
-        self.hands, img = self.detector.findHands(img, flipType=False)
+        self.hands = self.detector.findHands(img, draw=False, flipType=False)
         self.img = img
 
         if self.hands:
@@ -77,6 +77,27 @@ class Player(pygame.sprite.Sprite):
             self.rect.x = map + self.vwidth
 
             self.fingers = self.detector.fingersUp(hand)
+
+            if self.fingers[1] == 1:
+                cv2.rectangle(img, (x - 20, y - 20),
+                              (x + w + 20, y + h + 20),
+                              (0, 0, 200), 10)
+                cv2.putText(img, 'SHOOT', (x - 30, y - 30), cv2.FONT_HERSHEY_PLAIN,
+                            7, (0, 0, 200), 10)
+            elif self.fingers == [0,0,0,0,1]:
+                cv2.rectangle(img, (x - 20, y - 20),
+                              (x + w + 20, y + h + 20),
+                              (0, 200, 0), 10)
+                cv2.putText(img, 'FLIP', (x - 30, y - 30), cv2.FONT_HERSHEY_PLAIN,
+                            7, (0, 200, 0), 10)
+            else:
+                cv2.rectangle(img, (x - 20, y - 20),
+                              (x + w + 20, y + h + 20),
+                              (200, 0, 0), 10)
+                cv2.putText(img, 'MOVE', (x - 30, y - 30), cv2.FONT_HERSHEY_PLAIN,
+                            7, (200, 0, 0), 10)
+
+            # cv2.putText(self.img, 'hi', (x, y - 20), cv2.FONT_HERSHEY_COMPLEX, 2, (255, 0, 255), 2)
             return True
         return False
 
@@ -109,19 +130,19 @@ class Player(pygame.sprite.Sprite):
             self.in_scope = True
 
             if self.fingers[1] == 1:
-                shoot1 = pygame.image.load("./Resources/shoot1.png").convert_alpha()
+                shoot1 = pygame.image.load("../Resources/shoot1.png").convert_alpha()
                 shoot1 = pygame.transform.scale(shoot1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
                 self.screen.blit(shoot1, (17, 305))
             elif self.fingers == [0,0,0,0,1]:
                 if self.game_state == 0:
                     self.game_state = 1
-                if self.game_state == 2:
+                if self.game_state == 2 or self.game_state == 4:
                     self.game_state = 3
-                flip1 = pygame.image.load("./Resources/flip1.png").convert_alpha()
+                flip1 = pygame.image.load("../Resources/flip1.png").convert_alpha()
                 flip1 = pygame.transform.scale(flip1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
                 self.screen.blit(flip1, (17, 400))
             else:
-                move1 = pygame.image.load("./Resources/move1.png").convert_alpha()
+                move1 = pygame.image.load("../Resources/move1.png").convert_alpha()
                 move1 = pygame.transform.scale(move1, (self.ww / self.ww * 330, self.wh / self.wh * 90))
                 self.screen.blit(move1, (17, 210))
 

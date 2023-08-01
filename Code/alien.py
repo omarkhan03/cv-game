@@ -4,7 +4,7 @@ import pygame
 class Alien(pygame.sprite.Sprite):
     def __init__(self,color,x,y,flipped):
         super().__init__()
-        file_path = './Resources/' + color + '.png'
+        file_path = '../Resources/' + color + '.png'
         self.image0 = pygame.image.load(file_path).convert_alpha()
         self.image = pygame.transform.scale(self.image0, (20 / 1, 15 / 1))
         self.flipped = False
@@ -29,7 +29,7 @@ class Alien(pygame.sprite.Sprite):
 class Extra(pygame.sprite.Sprite):
     def __init__(self,side,window_width, video_width, flipped):
         super().__init__()
-        self.image0 = pygame.image.load('./Resources/extra.png').convert_alpha()
+        self.image0 = pygame.image.load('../Resources/extra.png').convert_alpha()
         self.image = pygame.transform.scale(self.image0, (20 / 1, 12 / 1))
 
         if side == 'right':

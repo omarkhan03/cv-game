@@ -15,10 +15,10 @@ class Game:
 
         # health and score setup
         self.lives = 3
-        self.live_surf = pygame.image.load('./Resources/player.png').convert_alpha()
+        self.live_surf = pygame.image.load('../Resources/player.png').convert_alpha()
         self.score = 0
-        self.font = pygame.font.Font('./Resources/Pixeled.ttf', 14)
-        self.small_font = pygame.font.Font('./Resources/Pixeled.ttf', 7)
+        self.font = pygame.font.Font('../Resources/Pixeled.ttf', 14)
+        self.small_font = pygame.font.Font('../Resources/Pixeled.ttf', 7)
 
         # obstacle setup
         self.shape = None
@@ -40,9 +40,9 @@ class Game:
         self.extra_spawn_time = randint(100,200)
 
         # Audio
-        self.laser_sound = pygame.mixer.Sound('./Resources/laser.wav')
+        self.laser_sound = pygame.mixer.Sound('../Resources/laser.wav')
         self.laser_sound.set_volume(0.01)
-        self.explosion_sound = pygame.mixer.Sound('./Resources/explosion.wav')
+        self.explosion_sound = pygame.mixer.Sound('../Resources/explosion.wav')
         self.explosion_sound.set_volume(0.01)
 
     def create_obstacle(self, x_start, y_start, offset_x, flipped):
@@ -70,9 +70,9 @@ class Game:
                 x = col_index * x_distance + x_offset
                 if flipped:
                     y = row_index * y_distance + y_offset
-                    if row_index <= 2:
+                    if row_index <= 1:
                         alien_sprite = Alien('red', x, y, flipped)
-                    elif 4 >= row_index > 2:
+                    elif 3 >= row_index > 1:
                         alien_sprite = Alien('green', x, y, flipped)
                     else:
                         alien_sprite = Alien('yellow', x, y, flipped)
@@ -190,8 +190,14 @@ class Game:
     def victory_message(self):
         if not self.aliens.sprites():
             victory_surf = self.font.render('You won', False, 'white')
-            victory_rect = victory_surf.get_rect(center=((window_width/2) + (video_width/2), (screen_height / 2)-50))
+            victory_rect = victory_surf.get_rect(center=((window_width/2) + (video_width/2), (screen_height / 2)-150))
             screen.blit(victory_surf, victory_rect)
+
+            start_surf = self.font.render('FLIP to restart', False, 'white')
+            start_rect = start_surf.get_rect(center=((window_width / 2) + (video_width / 2), (screen_height / 2) + 150))
+            screen.blit(start_surf, start_rect)
+
+            self.player_sprite.game_state = 4
 
     def start_message(self):
         start_surf = self.font.render('FLIP to start the game', False, 'white')
@@ -283,19 +289,19 @@ def start_game():
         except:
             print("First game loop (image not initialized)")
 
-        logo = pygame.image.load("./Resources/logo.png").convert_alpha()
+        logo = pygame.image.load("../Resources/logo.png").convert_alpha()
         logo = pygame.transform.scale(logo, (window_width / window_width * 400, window_height / window_height * 100))
         screen.blit(logo, (-22, 6))
 
-        move0 = pygame.image.load("./Resources/move0.png").convert_alpha()
+        move0 = pygame.image.load("../Resources/move0.png").convert_alpha()
         move0 = pygame.transform.scale(move0, (window_width / window_width * 330, window_height / window_height * 90))
         screen.blit(move0, (17, 210))
 
-        shoot0 = pygame.image.load("./Resources/shoot0.png").convert_alpha()
+        shoot0 = pygame.image.load("../Resources/shoot0.png").convert_alpha()
         shoot0 = pygame.transform.scale(shoot0, (window_width / window_width * 330, window_height / window_height * 90))
         screen.blit(shoot0, (17, 305))
 
-        flip0 = pygame.image.load("./Resources/flip0.png").convert_alpha()
+        flip0 = pygame.image.load("../Resources/flip0.png").convert_alpha()
         flip0 = pygame.transform.scale(flip0, (window_width / window_width * 330, window_height / window_height * 90))
         screen.blit(flip0, (17, 400))
 
