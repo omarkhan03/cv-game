@@ -4,7 +4,6 @@ from cvzone.HandTrackingModule import HandDetector
 import numpy as np
 from laser import Laser
 
-
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, cwidth, speed, vwidth, screen, height):
         super().__init__()
@@ -41,7 +40,7 @@ class Player(pygame.sprite.Sprite):
         self.laser_sound = pygame.mixer.Sound('./Resources/laser.wav')
         self.laser_sound.set_volume(0.01)
 
-        self.game_started = False
+        self.game_state = 0
 
     def constraint(self):
         if self.rect.left <= self.vwidth:
@@ -114,9 +113,10 @@ class Player(pygame.sprite.Sprite):
                 shoot1 = pygame.transform.scale(shoot1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
                 self.screen.blit(shoot1, (5, 305))
             elif self.fingers == [0,0,0,0,1]:
-                if not self.game_started:
-                    self.game_started = True
-                    return True
+                if self.game_state == 0:
+                    self.game_state = 1
+                if self.game_state == 2:
+                    self.game_state = 3
                 flip1 = pygame.image.load("./Resources/flip1.png").convert_alpha()
                 flip1 = pygame.transform.scale(flip1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
                 self.screen.blit(flip1, (5, 400))

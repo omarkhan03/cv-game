@@ -155,8 +155,7 @@ class Game:
                     laser.kill()
                     self.lives -= 1
                     if self.lives <= 0:
-                        pygame.quit()
-                        sys.exit()
+                        self.player_sprite.game_state = 2
                     self.explosion_sound.play()
 
         # aliens
@@ -198,11 +197,26 @@ class Game:
         start_rect = start_surf.get_rect(center=((window_width/2) + (video_width/2), (screen_height / 2)-50))
         screen.blit(start_surf, start_rect)
 
+    def death_message(self):
+        dead_surf = self.font.render('You died!', False, 'white')
+        dead_rect = dead_surf.get_rect(center=((window_width/2) + (video_width/2), (screen_height / 2)-50))
+        screen.blit(dead_surf, dead_rect)
+
+        start_surf = self.font.render('FLIP to restart', False, 'white')
+        start_rect = start_surf.get_rect(center=((window_width/2) + (video_width/2), (screen_height / 2)+50))
+        screen.blit(start_surf, start_rect)
+
     def run(self):
 
         self.player.update()
-        if not self.player_sprite.game_started:
+        if self.player_sprite.game_state == 0:
             self.start_message()
+            return
+        if self.player_sprite.game_state == 2:
+            self.death_message()
+            return
+        if self.player_sprite.game_state == 3:
+            start_game()
             return
 
         self.aliens.update(self.alien_direction)
@@ -226,30 +240,11 @@ class Game:
         self.victory_message()
 
 
-if __name__ == '__main__':
-    pygame.mixer.pre_init(44100, -16, 1, 512)
-    pygame.init()
-
-    screen_width = 600
-    screen_height = 700
-
-    video_width = 213 * 1.7
-    video_height = 120 * 1.7
-
-    window_width = screen_width + video_width
-    window_height = screen_height
-
-    video_pos_x = 0
-    video_pos_y = screen_height - video_height
-
-    screen = pygame.display.set_mode((window_width, window_height))
-    pygame.display.set_caption("Gesture-Controlled Space Invaders+")
-
-    clock = pygame.time.Clock()
+def start_game():
     game = Game()
 
     ALIENLASER = pygame.USEREVENT + 1
-    pygame.time.set_timer(ALIENLASER,800)
+    pygame.time.set_timer(ALIENLASER, 800)
 
     video_capture = cv2.VideoCapture(0)  # 0 represents the default camera
     video_capture.set(3, 1920)
@@ -260,7 +255,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == ALIENLASER and game.player_sprite.game_started:
+            if event.type == ALIENLASER and game.player_sprite.game_state == 1:
                 game.alien_shoot()
 
         # Convert the frame from BGR to RGB for PyGame
@@ -283,21 +278,45 @@ if __name__ == '__main__':
             print("First game loop (image not initialized)")
 
         logo = pygame.image.load("./Resources/logo.png").convert_alpha()
-        logo = pygame.transform.scale(logo, (window_width / window_width*400, window_height / window_height*100))
+        logo = pygame.transform.scale(logo, (window_width / window_width * 400, window_height / window_height * 100))
         screen.blit(logo, (-20, 0))
 
         move0 = pygame.image.load("./Resources/move0.png").convert_alpha()
-        move0 = pygame.transform.scale(move0, (window_width / window_width*330, window_height / window_height*90))
+        move0 = pygame.transform.scale(move0, (window_width / window_width * 330, window_height / window_height * 90))
         screen.blit(move0, (5, 210))
 
         shoot0 = pygame.image.load("./Resources/shoot0.png").convert_alpha()
-        shoot0 = pygame.transform.scale(shoot0, (window_width / window_width*330, window_height / window_height*90))
+        shoot0 = pygame.transform.scale(shoot0, (window_width / window_width * 330, window_height / window_height * 90))
         screen.blit(shoot0, (5, 305))
 
         flip0 = pygame.image.load("./Resources/flip0.png").convert_alpha()
-        flip0 = pygame.transform.scale(flip0, (window_width / window_width*330, window_height / window_height*90))
+        flip0 = pygame.transform.scale(flip0, (window_width / window_width * 330, window_height / window_height * 90))
         screen.blit(flip0, (5, 400))
 
         game.run()
         pygame.display.flip()
         clock.tick(60)
+
+
+if __name__ == '__main__':
+    pygame.mixer.pre_init(44100, -16, 1, 512)
+    pygame.init()
+
+    screen_width = 600
+    screen_height = 700
+
+    video_width = 213 * 1.7
+    video_height = 120 * 1.7
+
+    window_width = screen_width + video_width
+    window_height = screen_height
+
+    video_pos_x = 0
+    video_pos_y = screen_height - video_height
+
+    screen = pygame.display.set_mode((window_width, window_height))
+    pygame.display.set_caption("Gesture-Controlled Space Invaders+")
+
+    clock = pygame.time.Clock()
+
+    start_game()
