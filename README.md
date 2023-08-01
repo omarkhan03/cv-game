@@ -50,7 +50,7 @@ https://github.com/omarkhan03/cv-game/assets/106503860/39e8bc5a-315d-4bee-bc65-d
     ```sh
      python3 main.py
     ```
-
+    *Note - you may need to click on a prompt to allow the terminal to access your computer's camera.*
 <br>
 
 # Credits
