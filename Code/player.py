@@ -111,7 +111,7 @@ class Player(pygame.sprite.Sprite):
             if self.fingers[1] == 1:
                 shoot1 = pygame.image.load("./Resources/shoot1.png").convert_alpha()
                 shoot1 = pygame.transform.scale(shoot1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
-                self.screen.blit(shoot1, (5, 305))
+                self.screen.blit(shoot1, (17, 305))
             elif self.fingers == [0,0,0,0,1]:
                 if self.game_state == 0:
                     self.game_state = 1
@@ -119,11 +119,11 @@ class Player(pygame.sprite.Sprite):
                     self.game_state = 3
                 flip1 = pygame.image.load("./Resources/flip1.png").convert_alpha()
                 flip1 = pygame.transform.scale(flip1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
-                self.screen.blit(flip1, (5, 400))
+                self.screen.blit(flip1, (17, 400))
             else:
                 move1 = pygame.image.load("./Resources/move1.png").convert_alpha()
                 move1 = pygame.transform.scale(move1, (self.ww / self.ww * 330, self.wh / self.wh * 90))
-                self.screen.blit(move1, (5, 210))
+                self.screen.blit(move1, (17, 210))
 
         else: self.in_scope = False
 
@@ -131,7 +131,8 @@ class Player(pygame.sprite.Sprite):
             self.constraint()
             self.lasers.update()
             self.get_input()
-        except Exception as e: print(e)
+        except:
+            pass
 
         self.recharge_flip()
         self.recharge_shoot()

@@ -18,6 +18,7 @@ class Game:
         self.live_surf = pygame.image.load('./Resources/player.png').convert_alpha()
         self.score = 0
         self.font = pygame.font.Font('./Resources/Pixeled.ttf', 14)
+        self.small_font = pygame.font.Font('./Resources/Pixeled.ttf', 7)
 
         # obstacle setup
         self.shape = None
@@ -206,6 +207,11 @@ class Game:
         start_rect = start_surf.get_rect(center=((window_width/2) + (video_width/2), (screen_height / 2)+50))
         screen.blit(start_surf, start_rect)
 
+    def display_website(self):
+        website_surf = self.small_font.render('https://okhan.me', False, 'white')
+        website_rect = website_surf.get_rect(topleft = (120,0))
+        screen.blit(website_surf, website_rect)
+
     def run(self):
 
         self.player.update()
@@ -279,19 +285,21 @@ def start_game():
 
         logo = pygame.image.load("./Resources/logo.png").convert_alpha()
         logo = pygame.transform.scale(logo, (window_width / window_width * 400, window_height / window_height * 100))
-        screen.blit(logo, (-20, 0))
+        screen.blit(logo, (-22, 6))
 
         move0 = pygame.image.load("./Resources/move0.png").convert_alpha()
         move0 = pygame.transform.scale(move0, (window_width / window_width * 330, window_height / window_height * 90))
-        screen.blit(move0, (5, 210))
+        screen.blit(move0, (17, 210))
 
         shoot0 = pygame.image.load("./Resources/shoot0.png").convert_alpha()
         shoot0 = pygame.transform.scale(shoot0, (window_width / window_width * 330, window_height / window_height * 90))
-        screen.blit(shoot0, (5, 305))
+        screen.blit(shoot0, (17, 305))
 
         flip0 = pygame.image.load("./Resources/flip0.png").convert_alpha()
         flip0 = pygame.transform.scale(flip0, (window_width / window_width * 330, window_height / window_height * 90))
-        screen.blit(flip0, (5, 400))
+        screen.blit(flip0, (17, 400))
+
+        game.display_website()
 
         game.run()
         pygame.display.flip()
