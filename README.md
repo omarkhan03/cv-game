@@ -36,7 +36,7 @@ https://github.com/omarkhan03/cv-game/assets/106503860/39e8bc5a-315d-4bee-bc65-d
 
 2. Clone the repository
     ```sh
-      git clone https://github.com/your_username_/Project-Name.git
+      git clone https://github.com/omarkhan03/cv-game.git
     ```
 3. CD into the Code directory
      ```sh
