@@ -25,8 +25,8 @@ class Game:
         self.blocks = pygame.sprite.Group()
         self.obstacle_amount = 8
         self.obstacle_x_positions = [num * (screen_width / self.obstacle_amount) for num in range(self.obstacle_amount)]
-        self.create_multiple_obstacles(*self.obstacle_x_positions, x_start=video_width + (screen_width/15), y_start=screen_height/2-100, flipped=False)
-        self.create_multiple_obstacles(*self.obstacle_x_positions, x_start=video_width + (screen_width/15), y_start=screen_height/2+100, flipped=True)
+        self.create_multiple_obstacles(*self.obstacle_x_positions, x_start=video_width + (screen_width/15), y_start=screen_height/2-70, flipped=False)
+        self.create_multiple_obstacles(*self.obstacle_x_positions, x_start=video_width + (screen_width/15), y_start=screen_height/2+70, flipped=True)
 
         # alien setup
         self.aliens = pygame.sprite.Group()
@@ -37,6 +37,12 @@ class Game:
 
         self.extra = pygame.sprite.GroupSingle()
         self.extra_spawn_time = randint(100,200)
+
+        # Audio
+        self.laser_sound = pygame.mixer.Sound('./Resources/laser.wav')
+        self.laser_sound.set_volume(0.01)
+        self.explosion_sound = pygame.mixer.Sound('./Resources/explosion.wav')
+        self.explosion_sound.set_volume(0.01)
 
     def create_obstacle(self, x_start, y_start, offset_x, flipped):
         if flipped:
@@ -87,9 +93,11 @@ class Game:
             if alien.rect.right >= window_width:
                 self.alien_direction = -1
                 self.alien_move_down(2)
+                break
             elif alien.rect.left <= video_width:
                 self.alien_direction = 1
                 self.alien_move_down(2)
+                break
 
     def alien_move_down(self,distance):
         if self.aliens:
@@ -128,11 +136,13 @@ class Game:
                     for alien in aliens_hit:
                         self.score += alien.value
                     laser.kill()
+                    self.explosion_sound.play()
 
                 # extra collisions
                 if pygame.sprite.spritecollide(laser, self.extra, True):
                     self.score += 500
                     laser.kill()
+                    self.explosion_sound.play()
 
         # alien lasers
         if self.alien_lasers:
@@ -147,6 +157,7 @@ class Game:
                     if self.lives <= 0:
                         pygame.quit()
                         sys.exit()
+                    self.explosion_sound.play()
 
         # aliens
         if self.aliens:
@@ -198,6 +209,7 @@ class Game:
 
 
 if __name__ == '__main__':
+    pygame.mixer.pre_init(44100, -16, 1, 512)
     pygame.init()
 
     screen_width = 600
@@ -213,7 +225,7 @@ if __name__ == '__main__':
     video_pos_y = screen_height - video_height
 
     screen = pygame.display.set_mode((window_width, window_height))
-    pygame.display.set_caption("Gesture-Control Space Invaders")
+    pygame.display.set_caption("Gesture-Controlled Space Invaders+")
 
     clock = pygame.time.Clock()
     game = Game()
@@ -240,7 +252,6 @@ if __name__ == '__main__':
         try:
             frame_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             frame_rgb = cv2.rotate(frame_rgb, cv2.ROTATE_90_COUNTERCLOCKWISE)  # Rotate the frame
-            # frame_rgb = cv2.rotate(frame_rgb, cv2)  # Rotate the frame
             frame_rgb = pygame.surfarray.make_surface(frame_rgb)
 
             # Scale the video frame to fit the specified dimensions
@@ -250,8 +261,6 @@ if __name__ == '__main__':
             screen.fill((0, 0, 0))
             screen.fill((50, 50, 50), (0, 0, video_width, screen.get_height()))
             screen.blit(frame_scaled, (video_pos_x, video_pos_y))
-
-
         except:
             print("First game loop (image not initialized)")
 

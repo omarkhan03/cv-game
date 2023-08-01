@@ -17,8 +17,13 @@ class Alien(pygame.sprite.Sprite):
         elif color == 'green': self.value = 200
         elif color == 'yellow': self.value = 300
 
+        self.now = 0
+
     def update(self,direction):
-        self.rect.x += direction
+        if pygame.time.get_ticks() > self.now + 20:
+            self.rect.x += direction
+            self.now = pygame.time.get_ticks()
+
 
 
 class Extra(pygame.sprite.Sprite):

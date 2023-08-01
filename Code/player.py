@@ -38,6 +38,9 @@ class Player(pygame.sprite.Sprite):
         self.ww = cwidth + vwidth
         self.wh = height
 
+        self.laser_sound = pygame.mixer.Sound('./Resources/laser.wav')
+        self.laser_sound.set_volume(0.01)
+
     def constraint(self):
         if self.rect.left <= self.vwidth:
             self.rect.left = self.vwidth
@@ -78,6 +81,7 @@ class Player(pygame.sprite.Sprite):
 
     def get_input(self):
         if self.fingers[1] == 1 and self.ready_to_shoot:
+            self.laser_sound.play()
             self.shoot_laser()
             self.ready_to_shoot = False
             self.laser_time = pygame.time.get_ticks()
