@@ -23,7 +23,9 @@ On the left side of the window is the UI, which displays a video feed taken from
 
 https://github.com/omarkhan03/cv-game/assets/106503860/39e8bc5a-315d-4bee-bc65-dedbac63dc76
 
-[youtube video](https://youtu.be/2USyuYQyp-k)
+*Turn on sound!*
+
+[Link to YouTube video.](https://youtu.be/2USyuYQyp-k)
 
 <br>
 
@@ -52,5 +54,6 @@ https://github.com/omarkhan03/cv-game/assets/106503860/39e8bc5a-315d-4bee-bc65-d
 <br>
 
 # Credits
-Thanks to [Murtaza's workshop](https://www.youtube.com/@murtazasworkshop)'s videos for helping to learn OpenCV as well as the CvZone library, from which I used the hand tracking module.
-I built off of [this PyGame tutorial](https://www.youtube.com/watch?v=o-6pADy5Mdg) by Clear Code on YouTube. Thanks a lot!
+- Thanks to [Murtaza's workshop](https://www.youtube.com/@murtazasworkshop)'s videos for helping to learn OpenCV as well as the CvZone library, from which I used the hand tracking module.
+
+- I built off of [this PyGame tutorial](https://www.youtube.com/watch?v=o-6pADy5Mdg) by Clear Code on YouTube. Thanks a lot!
