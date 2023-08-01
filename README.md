@@ -1,5 +1,10 @@
 # Gesture-Controlled Arcade Game
 
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![opencv](https://img.shields.io/static/v1?style=for-the-badge&message=OpenCV&color=5C3EE8&logo=OpenCV&logoColor=FFFFFF&label=)
+![Pygame](https://img.shields.io/badge/PyGame-008080?style=for-the-badge&logo=PyGame&logoColor=white)
+![numpy](https://img.shields.io/badge/Numpy-777BB4?style=for-the-badge&logo=numpy&logoColor=white)
+
 ## Table of contents
 
 - [Description](#description)
