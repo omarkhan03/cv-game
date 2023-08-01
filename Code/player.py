@@ -41,6 +41,8 @@ class Player(pygame.sprite.Sprite):
         self.laser_sound = pygame.mixer.Sound('./Resources/laser.wav')
         self.laser_sound.set_volume(0.01)
 
+        self.game_started = False
+
     def constraint(self):
         if self.rect.left <= self.vwidth:
             self.rect.left = self.vwidth
@@ -112,6 +114,9 @@ class Player(pygame.sprite.Sprite):
                 shoot1 = pygame.transform.scale(shoot1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
                 self.screen.blit(shoot1, (5, 305))
             elif self.fingers == [0,0,0,0,1]:
+                if not self.game_started:
+                    self.game_started = True
+                    return True
                 flip1 = pygame.image.load("./Resources/flip1.png").convert_alpha()
                 flip1 = pygame.transform.scale(flip1,(self.ww / self.ww * 330, self.wh / self.wh * 90))
                 self.screen.blit(flip1, (5, 400))

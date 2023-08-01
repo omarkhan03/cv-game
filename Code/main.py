@@ -187,8 +187,24 @@ class Game:
         if not self.player_sprite.in_scope:
             screen.blit(scope_surf, scope_rect)
 
+    def victory_message(self):
+        if not self.aliens.sprites():
+            victory_surf = self.font.render('You won', False, 'white')
+            victory_rect = victory_surf.get_rect(center=((window_width/2) + (video_width/2), (screen_height / 2)-50))
+            screen.blit(victory_surf, victory_rect)
+
+    def start_message(self):
+        start_surf = self.font.render('FLIP to start the game', False, 'white')
+        start_rect = start_surf.get_rect(center=((window_width/2) + (video_width/2), (screen_height / 2)-50))
+        screen.blit(start_surf, start_rect)
+
     def run(self):
+
         self.player.update()
+        if not self.player_sprite.game_started:
+            self.start_message()
+            return
+
         self.aliens.update(self.alien_direction)
         self.alien_position_checker()
         self.alien_lasers.update()
@@ -206,6 +222,8 @@ class Game:
         self.display_lives()
         self.display_score()
         self.display_in_scope()
+
+        self.victory_message()
 
 
 if __name__ == '__main__':
@@ -242,7 +260,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == ALIENLASER:
+            if event.type == ALIENLASER and game.player_sprite.game_started:
                 game.alien_shoot()
 
         # Convert the frame from BGR to RGB for PyGame
